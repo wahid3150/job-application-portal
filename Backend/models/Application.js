@@ -18,7 +18,7 @@ const applicationSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: ["applied", "in-review", "accepted", "rejected"],
-      default: "Applied",
+      default: "applied",
     },
   },
   { timestamps: true }
