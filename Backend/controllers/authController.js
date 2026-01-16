@@ -82,3 +82,27 @@ exports.loginUser = async (req, res) => {
     });
   }
 };
+
+exports.getMe = async (req, res) => {
+  try {
+    // protect middleware ne user attach kar diya hota hai
+    const user = req.user;
+
+    return res.status(200).json({
+      success: true,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        avatar: user.avatar || null,
+        companyName: user.companyName || null,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
