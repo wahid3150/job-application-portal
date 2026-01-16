@@ -37,7 +37,6 @@ const jobSchema = new mongoose.Schema(
     },
     salaryMax: {
       type: Number,
-      max: 0,
       validate: {
         validator: function (value) {
           return !this.salaryMin || value >= this.salaryMin;
