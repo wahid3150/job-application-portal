@@ -25,7 +25,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 
 // Serve uploads folder
-app.use("/uploads", express.static(path.join(__dirname, "uploads"), {}));
+// app.use("/uploads", express.static(path.join(__dirname, "uploads"), {}));
 
 // Start SERVER
 const PORT = process.env.PORT || 5000;
