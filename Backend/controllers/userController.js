@@ -28,3 +28,31 @@ exports.getMyProfile = async (req, res) => {
     });
   }
 };
+
+exports.updateMyProfile = async (req, res) => {
+  try {
+    const user = req.user; //from protect middleware
+    const { name, companyName, companyDescription } = req.body;
+
+    // 1 allowed updates only
+    if (name !== undefined) user.name = name;
+    // 2 role-based updates
+    if (user.role === "employer") {
+      if (companyName !== undefined) user.companyName = companyName;
+      if (companyDescription !== undefined)
+        user.companyDescription = companyDescription;
+    }
+
+    // jobseeker cannot update company fields
+    await user.save();
+    return res.status(200).json({
+      success: true,
+      message: "Profile updated successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
