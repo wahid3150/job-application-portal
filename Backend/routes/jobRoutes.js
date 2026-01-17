@@ -11,5 +11,6 @@ const router = express.Router();
 
 router.post("/", protect, authorizeRoles("employer"), createJob);
 router.get("/", getAllJobs);
+router.get("/:id", getJobById);
 
 module.exports = router;
