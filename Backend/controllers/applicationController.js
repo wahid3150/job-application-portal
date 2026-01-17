@@ -75,3 +75,50 @@ exports.getMyApplication = async (req, res) => {
     });
   }
 };
+
+exports.getApplicationByJob = async (req, res) => {
+  try {
+    const { jobId } = req.params;
+
+    // 1. Check job exists
+    const job = await Job.findById(jobId);
+    if (!job) {
+      return res.status(404).json({
+        success: false,
+        message: "Job not found",
+      });
+    }
+
+    // 2. Ownership check (VERY IMPORTANT)
+    if (job.company.toString() !== req.user._id.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: "You are not authorized to view these applications",
+      });
+    }
+
+    // 3. Get applications for this job
+    const applications = await Application.find({ job: jobId })
+      .populate("applicant", "name email resume")
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      count: applications.length,
+      applications,
+    });
+  } catch (error) {
+    //invalid ObjectId
+    if (error.name === "CastError") {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid job id",
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
