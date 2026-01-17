@@ -66,3 +66,31 @@ exports.getSavedJobs = async (req, res) => {
     });
   }
 };
+
+exports.removeSavedJob = async (req, res) => {
+  try {
+    const { jobId } = req.params;
+
+    const deleted = await SavedJob.findOneAndDelete({
+      jobseeker: req.user._id,
+      job: jobId,
+    });
+
+    if (!deleted) {
+      return res.status(400).json({
+        success: false,
+        message: "Saved job not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Job removed from saved list",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
