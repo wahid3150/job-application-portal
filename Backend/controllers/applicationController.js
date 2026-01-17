@@ -54,3 +54,24 @@ exports.applyJob = async (req, res) => {
     });
   }
 };
+
+exports.getMyApplication = async (req, res) => {
+  try {
+    const applications = await Application.find({
+      applicant: req.user._id,
+    })
+      .populate("job", "title location jobType salaryMin salaryMax isClosed")
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      count: applications.length,
+      applications,
+    });
+  } catch (error) {
+    return res.status(500).send({
+      success: false,
+      message: error.message,
+    });
+  }
+};

@@ -28,7 +28,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/users/", userRoutes);
 app.use("/api/jobs", jobRoutes);
-app.use("/api/application", applicationRoute);
+app.use("/api/applications", applicationRoute);
 
 // Serve uploads folder
 // app.use("/uploads", express.static(path.join(__dirname, "uploads"), {}));
