@@ -3,6 +3,7 @@ const {
   applyJob,
   getMyApplication,
   getApplicationByJob,
+  updateApplicationStatus,
 } = require("../controllers/applicationController");
 const { protect } = require("../middlewares/authMiddleware");
 const { authorizeRoles } = require("../middlewares/roleMiddleware");
@@ -19,6 +20,14 @@ router.get(
   protect,
   authorizeRoles("employer"),
   getApplicationByJob
+);
+
+//jobseeker application status changing api
+router.patch(
+  "/:id/status",
+  protect,
+  authorizeRoles("employer"),
+  updateApplicationStatus
 );
 
 module.exports = router;
