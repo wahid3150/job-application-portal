@@ -45,3 +45,24 @@ exports.savedJob = async (req, res) => {
     });
   }
 };
+
+exports.getSavedJobs = async (req, res) => {
+  try {
+    const savedJobs = await SavedJob.find({
+      jobseeker: req.user._id,
+    })
+      .populate("job", "title location jobType salaryMin salaryMax isClosed")
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      message: savedJobs.length,
+      savedJobs,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
