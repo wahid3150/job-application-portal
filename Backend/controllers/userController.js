@@ -1,3 +1,6 @@
+const fs = require("fs");
+const path = require("path");
+
 exports.getMyProfile = async (req, res) => {
   try {
     // protect middleware already attached the user
@@ -98,6 +101,39 @@ exports.uploadResume = async (req, res) => {
       success: true,
       message: "Resume uploaded successfully",
       resume: req.user.resume,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+exports.deleteResume = async (req, res) => {
+  try {
+    if (!req.user.resume) {
+      return res.status(400).json({
+        success: false,
+        message: "No resume to delete",
+      });
+    }
+
+    // absolute path
+    const resumePath = path.join(__dirname, "..", req.user.resume);
+
+    // delete file if exists
+    if (fs.existsSync(resumePath)) {
+      fs.unlinkSync(resumePath);
+    }
+
+    // remove from DB
+    req.user.resume = undefined;
+    await req.user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Resume deleted successfully",
     });
   } catch (error) {
     return res.status(500).json({
