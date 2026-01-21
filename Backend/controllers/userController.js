@@ -56,3 +56,28 @@ exports.updateMyProfile = async (req, res) => {
     });
   }
 };
+
+exports.uploadAvatar = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "Please upload an image",
+      });
+    }
+
+    req.user.avatar = `uploads/avatars/${req.file.filename}`;
+    await req.user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Avatar uploaded successfully",
+      avatar: req.user.avatar,
+    });
+  } catch (error) {
+    return res.status(500).send({
+      success: false,
+      message: error.message,
+    });
+  }
+};
