@@ -81,3 +81,28 @@ exports.uploadAvatar = async (req, res) => {
     });
   }
 };
+
+exports.uploadResume = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "Please upload resume",
+      });
+    }
+
+    req.user.resume = `/uploads/resumes/${req.file.filename}`;
+    await req.user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Resume uploaded successfully",
+      resume: req.user.resume,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
