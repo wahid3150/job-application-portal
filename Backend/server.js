@@ -35,7 +35,7 @@ app.use("/api/saved-jobs", savedJobRoutes);
 app.use("/api/analytics", analyticsRoutes);
 
 // Serve uploads folder
-// app.use("/uploads", express.static(path.join(__dirname, "uploads"), {}));
+app.use("/uploads", express.static("uploads"));
 
 // Start SERVER
 const PORT = process.env.PORT || 5000;
