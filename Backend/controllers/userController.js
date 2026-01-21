@@ -66,7 +66,7 @@ exports.uploadAvatar = async (req, res) => {
       });
     }
 
-    req.user.avatar = `uploads/avatars/${req.file.filename}`;
+    req.user.avatar = `/uploads/avatars/${req.file.filename}`;
     await req.user.save();
 
     return res.status(200).json({
