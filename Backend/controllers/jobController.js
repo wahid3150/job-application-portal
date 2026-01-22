@@ -39,12 +39,41 @@ exports.createJob = async (req, res) => {
 
 exports.getAllJobs = async (req, res) => {
   try {
-    const jobs = await Job.find({ isClosed: false })
+    const { keyword, location, jobType, page = 1, limit = 10 } = req.query;
+
+    let query = { isClosed: false };
+
+    if (keyword) {
+      query.$or = [
+        { title: { $regex: keyword, $options: "i" } },
+        { description: { $regex: keyword, $options: "i" } },
+        { requirements: { $regex: keyword, $options: "i" } },
+      ];
+    }
+
+    if (location) {
+      query.location = location;
+    }
+
+    if (jobType) {
+      query.jobType = jobType;
+    }
+
+    const skip = (Number(page) - 1) * Number(limit);
+
+    const jobs = await Job.find(query)
       .populate("company", "name companyName companyLogo")
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(Number(limit));
+
+    const total = await Job.countDocuments(query);
 
     return res.status(200).json({
       success: true,
+      total,
+      page: Number(page),
+      pages: Math.ceil(total / limit),
       count: jobs.length,
       jobs,
     });
@@ -62,7 +91,7 @@ exports.getJobById = async (req, res) => {
 
     const job = await Job.findById(id).populate(
       "company",
-      "name companyName companyDescription companyLogo"
+      "name companyName companyDescription companyLogo",
     );
     if (!job) {
       return res.status(404).json({
