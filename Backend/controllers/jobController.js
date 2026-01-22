@@ -127,3 +127,22 @@ exports.getJobById = async (req, res) => {
     });
   }
 };
+
+exports.getJobsEmployer = async (req, res) => {
+  try {
+    const jobs = await Job.find({ company: req.user._id }).sort({
+      createdAt: -1,
+    });
+
+    return res.status(200).json({
+      success: true,
+      count: jobs.length,
+      jobs,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
