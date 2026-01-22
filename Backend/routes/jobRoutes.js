@@ -5,6 +5,7 @@ const {
   getJobById,
   getJobsEmployer,
   updateJob,
+  deleteJob,
 } = require("../controllers/jobController");
 const { protect } = require("../middlewares/authMiddleware");
 const { authorizeRoles } = require("../middlewares/roleMiddleware");
@@ -24,4 +25,6 @@ router.get(
 );
 
 router.put("/:id", protect, authorizeRoles("employer"), updateJob);
+router.delete("/:id", protect, authorizeRoles("employer"), deleteJob);
+
 module.exports = router;
