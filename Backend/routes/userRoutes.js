@@ -5,6 +5,7 @@ const {
   uploadAvatar,
   uploadResume,
   deleteResume,
+  getPublicProfile,
 } = require("../controllers/userController");
 const { protect } = require("../middlewares/authMiddleware");
 const {
@@ -32,4 +33,6 @@ router.put(
 
 router.delete("/me/resume", protect, authorizeRoles("jobseeker"), deleteResume);
 
+// Public profile
+router.get("/:id", getPublicProfile);
 module.exports = router;
