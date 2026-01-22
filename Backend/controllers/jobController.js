@@ -213,3 +213,36 @@ exports.deleteJob = async (req, res) => {
     });
   }
 };
+
+exports.toggleJobStatus = async (req, res) => {
+  try {
+    const job = await Job.findById(req.params.id);
+
+    if (!job) {
+      return res.status(404).json({
+        success: false,
+        message: "Job not found",
+      });
+    }
+
+    if (job.company.toString() !== req.user._id.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: "Not authorized",
+      });
+    }
+
+    job.isClosed = !job.isClosed;
+    await job.save();
+
+    return res.status(200).json({
+      success: true,
+      isClosed: job.isClosed,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};

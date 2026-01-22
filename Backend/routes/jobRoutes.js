@@ -6,6 +6,7 @@ const {
   getJobsEmployer,
   updateJob,
   deleteJob,
+  toggleJobStatus,
 } = require("../controllers/jobController");
 const { protect } = require("../middlewares/authMiddleware");
 const { authorizeRoles } = require("../middlewares/roleMiddleware");
@@ -26,5 +27,11 @@ router.get(
 
 router.put("/:id", protect, authorizeRoles("employer"), updateJob);
 router.delete("/:id", protect, authorizeRoles("employer"), deleteJob);
+router.patch(
+  "/:id/toggle",
+  protect,
+  authorizeRoles("employer"),
+  toggleJobStatus,
+);
 
 module.exports = router;
