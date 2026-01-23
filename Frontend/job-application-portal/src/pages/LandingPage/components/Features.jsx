@@ -84,7 +84,7 @@ const Features = () => {
       className="flex gap-6 mb-10 last:mb-0 group"
     >
       <div
-        className={`flex-shrink-0 w-16 h-16 rounded-lg flex items-center justify-center transition-all duration-300 group-hover:scale-110 ${colorClass}`}
+        className={`shrink-0 w-16 h-16 rounded-lg flex items-center justify-center transition-all duration-300 group-hover:scale-110 ${colorClass}`}
       >
         <feature.icon className="w-8 h-8 text-white" />
       </div>
@@ -123,7 +123,7 @@ const Features = () => {
         >
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
             Everything You Need To
-            <span className="block bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mt-2">
+            <span className="block bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mt-2">
               Succeed
             </span>
           </h2>
@@ -207,7 +207,7 @@ const Features = () => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
           viewport={{ once: true }}
-          className="mt-24 bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-10 md:p-16 text-center border border-blue-100"
+          className="mt-24 bg-linear-to-r from-blue-50 to-purple-50 rounded-2xl p-10 md:p-16 text-center border border-blue-100"
         >
           <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
             Ready to Get Started?
@@ -221,14 +221,14 @@ const Features = () => {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-10 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-lg hover:shadow-lg transition-shadow text-lg"
+              className="px-10 py-4 bg-linear-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-lg hover:shadow-lg transition-shadow text-lg"
             >
               Find Jobs Now
             </motion.button>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-10 py-4 bg-gradient-to-r from-purple-600 to-purple-700 text-white font-semibold rounded-lg hover:shadow-lg transition-shadow text-lg"
+              className="px-10 py-4 bg-linear-to-r from-purple-600 to-purple-700 text-white font-semibold rounded-lg hover:shadow-lg transition-shadow text-lg"
             >
               Post a Job
             </motion.button>
