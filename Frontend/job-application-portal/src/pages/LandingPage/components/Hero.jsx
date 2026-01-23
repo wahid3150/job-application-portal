@@ -14,15 +14,15 @@ const Hero = () => {
     { icon: TrendingUp, label: "Job Posted", value: "150k+" },
   ];
   return (
-    <section className="pt-24 pb-16 bg-white min-h-screen flex items-center">
-      <div className="container mx-auto px-4">
+    <section className="pt-32 pb-20 bg-white min-h-screen flex items-center">
+      <div className="container mx-auto px-6 md:px-8 lg:px-12">
         <div className="max-w-4xl mx-auto text-center">
           {/* Main heading */}
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight pt-10"
+            className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-8 leading-tight pt-10"
           >
             Find Your Dream Job or
             <span className="block bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mt-2">
@@ -34,7 +34,7 @@ const Hero = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.8 }}
-            className="text-xl md:text-xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed"
+            className="text-lg md:text-xl text-gray-600 mb-14 max-w-3xl mx-auto leading-relaxed"
           >
             connect talented professionals with innovative companies. Your next
             career move or perfect candidate is just one click away.
