@@ -6,7 +6,7 @@ import {
   SAVED_JOB_ENDPOINTS,
   USER_ENDPOINTS,
   ANALYTICS_ENDPOINTS,
-} from "../../utils/apiPaths";
+} from "./apiPaths";
 
 // AUTHENTICATION API
 export const authAPI = {

@@ -4,7 +4,7 @@ import { Mail, Lock, Eye, EyeOff, CheckCircle, Loader } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
-import { authAPI } from "../utils/apiService";
+import { authAPI } from "../../utils/apiService";
 
 const Login = () => {
   const navigate = useNavigate();

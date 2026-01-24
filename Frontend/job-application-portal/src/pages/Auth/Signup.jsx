@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 import toast from "react-hot-toast";
-import { authAPI } from "../utils/apiService";
+import { authAPI } from "../../utils/apiService";
 
 const Signup = () => {
   const navigate = useNavigate();
