@@ -77,8 +77,11 @@ const Login = () => {
           toast.success("Login successful!");
           if (response.user.role === "employer") {
             navigate("/employer-dashboard");
+          } else if (response.user.role === "jobseeker") {
+            navigate("/jobseeker-dashboard");
           } else {
-            navigate("/find-jobs");
+            // Fallback for any other role
+            navigate("/");
           }
         }, 2500);
       }

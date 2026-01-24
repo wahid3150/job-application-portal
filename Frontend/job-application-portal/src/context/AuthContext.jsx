@@ -58,6 +58,7 @@ export const AuthProvider = ({ children }) => {
   const login = (userData, tokenData) => {
     setUser(userData);
     setToken(tokenData);
+    setIsLoading(false); // Ensure loading is false after login
     localStorage.setItem("token", tokenData);
     localStorage.setItem("user", JSON.stringify(userData));
   };
