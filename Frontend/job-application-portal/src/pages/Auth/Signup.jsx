@@ -348,7 +348,7 @@ const Signup = () => {
             </label>
             <div className="flex items-center gap-4">
               {/* Avatar Preview */}
-              <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">
+              <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center shrink-0">
                 {avatarPreview ? (
                   <img
                     src={avatarPreview}
@@ -440,7 +440,7 @@ const Signup = () => {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             type="submit"
-            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 rounded-lg transition-all duration-300 text-lg mt-8"
+            className="w-full bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 rounded-lg transition-all duration-300 text-lg mt-8"
           >
             Create Account
           </motion.button>
