@@ -90,11 +90,19 @@ exports.loginUser = async (req, res) => {
       expiresIn: "7d",
     });
 
-    // 4. Response
+    // 4. Response with user data
     return res.status(200).json({
       success: true,
       message: "Login successful",
       token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        avatar: user.avatar || null,
+        companyName: user.companyName || null,
+      },
     });
   } catch (error) {
     return res.status(500).json({
