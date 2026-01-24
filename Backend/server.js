@@ -10,6 +10,7 @@ const savedJobRoutes = require("./routes/savedJobRoutes");
 const analyticsRoutes = require("./routes/analyticsRoutes");
 
 const app = express();
+app.disable("x-powered-by");
 
 //Middleware to handle CORS
 app.use(
@@ -17,7 +18,7 @@ app.use(
     origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
-  })
+  }),
 );
 
 // Connect Database
@@ -25,6 +26,7 @@ connectDB();
 
 // Middleware
 app.use(express.json());
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 // Routes
 app.use("/api/auth", authRoutes);
