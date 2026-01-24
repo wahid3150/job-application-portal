@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 import toast from "react-hot-toast";
+import { authAPI } from "../utils/apiService";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -23,6 +24,8 @@ const Signup = () => {
     password: "",
     role: "",
     avatar: null,
+    companyName: "",
+    companyDescription: "",
   });
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
@@ -54,6 +57,15 @@ const Signup = () => {
 
     if (!formData.role) {
       newErrors.role = "Please select your role";
+    }
+
+    // Employer-specific validation
+    if (formData.role === "employer") {
+      if (!formData.companyName.trim()) {
+        newErrors.companyName = "Company name is required for employers";
+      } else if (formData.companyName.length < 2) {
+        newErrors.companyName = "Company name must be at least 2 characters";
+      }
     }
 
     setErrors(newErrors);
@@ -130,18 +142,31 @@ const Signup = () => {
     setIsLoading(true);
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      const userData = {
+        name: formData.fullName,
+        email: formData.email,
+        password: formData.password,
+        role: formData.role,
+        avatar: formData.avatar,
+        companyName: formData.companyName,
+        companyDescription: formData.companyDescription,
+      };
 
-      setSignupSuccess(true);
+      const response = await authAPI.register(userData);
 
-      // Simulate redirect after success message
-      setTimeout(() => {
-        toast.success("Account created successfully!");
-        navigate("/login");
-      }, 2500);
+      if (response.success) {
+        setSignupSuccess(true);
+
+        // Redirect to login
+        setTimeout(() => {
+          toast.success("Account created successfully! Please login.");
+          navigate("/login");
+        }, 2500);
+      }
     } catch (error) {
-      toast.error("Signup failed. Please try again.");
+      const errorMessage =
+        error.response?.data?.message || "Signup failed. Please try again.";
+      toast.error(errorMessage);
       setIsLoading(false);
     }
   };
@@ -434,6 +459,59 @@ const Signup = () => {
               </motion.p>
             )}
           </div>
+
+          {/* Employer Fields - Conditional Rendering */}
+          {formData.role === "employer" && (
+            <>
+              {/* Company Name */}
+              <div>
+                <label className="block text-sm font-medium text-gray-800 mb-2">
+                  Company Name <span className="text-red-500">*</span>
+                </label>
+                <div
+                  className={`flex items-center border-2 rounded-lg transition-colors ${
+                    errors.companyName
+                      ? "border-red-500 bg-red-50"
+                      : "border-gray-300"
+                  }`}
+                >
+                  <Building2 className="w-5 h-5 text-gray-400 ml-4" />
+                  <input
+                    type="text"
+                    name="companyName"
+                    value={formData.companyName}
+                    onChange={handleChange}
+                    placeholder="Enter your company name"
+                    className="w-full px-4 py-3 bg-transparent outline-none placeholder-gray-400 text-gray-800"
+                  />
+                </div>
+                {errors.companyName && (
+                  <motion.p
+                    initial={{ opacity: 0, y: -5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-red-600 text-sm mt-1"
+                  >
+                    {errors.companyName}
+                  </motion.p>
+                )}
+              </div>
+
+              {/* Company Description */}
+              <div>
+                <label className="block text-sm font-medium text-gray-800 mb-2">
+                  Company Description
+                </label>
+                <textarea
+                  name="companyDescription"
+                  value={formData.companyDescription}
+                  onChange={handleChange}
+                  placeholder="Brief description of your company (optional)"
+                  rows="3"
+                  className="w-full px-4 py-3 bg-white border-2 border-gray-300 rounded-lg outline-none placeholder-gray-400 text-gray-800 resize-none"
+                />
+              </div>
+            </>
+          )}
 
           {/* Create Account Button */}
           <motion.button
