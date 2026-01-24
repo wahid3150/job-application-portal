@@ -20,15 +20,36 @@ exports.registerUser = async (req, res) => {
     // 2. Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // For normal registration which do not have image/file we use this and with image use below prepare user data step
     // 3. create user
-    const user = await User.create({
+    // const user = await User.create({
+    //   name,
+    //   email,
+    //   password: hashedPassword,
+    //   role,
+    //   companyName,
+    //   companyDescription,
+    // });
+
+    // 3. Prepare user data
+    const userData = {
       name,
       email,
       password: hashedPassword,
       role,
       companyName,
       companyDescription,
-    });
+    };
+
+    // Add avatar if uploaded
+    if (req.file) {
+      // Multer stores files in uploads/avatars, we need /uploads/avatars/filename
+      const avatarPath = `/uploads/avatars/${req.file.filename}`;
+      userData.avatar = avatarPath;
+    }
+
+    // 4. Create user
+    const user = await User.create(userData);
 
     return res.status(201).json({
       success: true,
