@@ -3,9 +3,12 @@ import { motion } from "framer-motion";
 import { Mail, Lock, Eye, EyeOff, CheckCircle, Loader } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 import toast from "react-hot-toast";
+import { useAuth } from "../../context/AuthContext";
+import { authAPI } from "../utils/apiService";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -62,18 +65,27 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      const response = await authAPI.login(formData.email, formData.password);
 
-      setLoginSuccess(true);
+      if (response.success) {
+        // Store token and user in context and localStorage
+        login(response.user, response.token);
+        setLoginSuccess(true);
 
-      // Simulate redirect after success message
-      setTimeout(() => {
-        toast.success("Login successful!");
-        navigate("/find-jobs");
-      }, 2500);
+        // Redirect based on user role
+        setTimeout(() => {
+          toast.success("Login successful!");
+          if (response.user.role === "employer") {
+            navigate("/employer-dashboard");
+          } else {
+            navigate("/find-jobs");
+          }
+        }, 2500);
+      }
     } catch (error) {
-      toast.error("Login failed. Please try again.");
+      const errorMessage =
+        error.response?.data?.message || "Login failed. Please try again.";
+      toast.error(errorMessage);
       setIsLoading(false);
     }
   };
