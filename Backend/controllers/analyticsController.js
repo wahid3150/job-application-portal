@@ -53,14 +53,14 @@ exports.getMyAnalytics = async (req, res) => {
     });
     const applicationsPrev7 = await Application.countDocuments({
       job: { $in: jobIds },
-      createdAt: { $gte: last7Days },
+      createdAt: { $gte: prev7Days, $lt: last7Days },
     });
 
     //Hired
     const hiredLast7 = await Application.countDocuments({
       job: { $in: jobIds },
       status: "accepted",
-      createdAt: { $gte: prev7Days, $lt: last7Days },
+      createdAt: { $gte: last7Days },
     });
     const hiredPrev7 = await Application.countDocuments({
       job: { $in: jobIds },
@@ -74,7 +74,7 @@ exports.getMyAnalytics = async (req, res) => {
       .limit(5)
       .select("title location jobType isClosed createdAt");
 
-    const recentApplications = await Job.find({
+    const recentApplications = await Application.find({
       job: { $in: jobIds },
     })
       .sort({ createdAt: -1 })
