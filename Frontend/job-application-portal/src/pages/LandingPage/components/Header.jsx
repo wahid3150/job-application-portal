@@ -1,12 +1,12 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Briefcase } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
 
 const Header = () => {
-  const isAuthenticated = true;
-  const user = { fullName: "Wahid", role: "employer" };
-  const navigate = useNavigate;
+  const { isAuthenticated, user } = useAuth();
+  const navigate = useNavigate();
   return (
     <motion.header
       initial={{ opacity: 0, y: -20 }}
@@ -25,24 +25,36 @@ const Header = () => {
           </div>
           {/* Navigation links - Hidden on mobile */}
           <nav className="hidden md:flex items-center space-x-8">
-            <a
-              onClick={() => navigate("/find-jobs")}
-              className="text-gray-600 hover:text-gray-900 transition-colors font-medium"
-            >
-              Find Jobs
-            </a>
-            <a
+            <button
               onClick={() => {
-                navigate(
-                  isAuthenticated && user?.role === "employer"
-                    ? "/employer-dashboard"
-                    : "/login",
-                );
+                if (isAuthenticated) {
+                  if (user?.role === "jobseeker") {
+                    navigate("/jobseeker-dashboard");
+                  } else if (user?.role === "employer") {
+                    navigate("/employer-dashboard");
+                  } else {
+                    navigate("/find-jobs");
+                  }
+                } else {
+                  navigate("/find-jobs");
+                }
               }}
               className="text-gray-600 hover:text-gray-900 transition-colors font-medium"
             >
-              For Employers{" "}
-            </a>
+              Find Jobs
+            </button>
+            <button
+              onClick={() => {
+                if (isAuthenticated && user?.role === "employer") {
+                  navigate("/employer-dashboard");
+                } else {
+                  navigate("/login");
+                }
+              }}
+              className="text-gray-600 hover:text-gray-900 transition-colors font-medium"
+            >
+              For Employers
+            </button>
           </nav>
 
           {/* Auth Button */}
@@ -50,33 +62,35 @@ const Header = () => {
             {isAuthenticated ? (
               <div className="flex items-center space-x-3">
                 <span className="text text-gray-700">
-                  Welcome, {user?.fullName}
+                  Welcome, {user?.name || user?.fullName || "User"}
                 </span>
-                <a
-                  href={
+                <Link
+                  to={
                     user?.role === "employer"
                       ? "/employer-dashboard"
+                      : user?.role === "jobseeker"
+                      ? "/jobseeker-dashboard"
                       : "/find-jobs"
                   }
-                  className="bg-linear-to-r from-blue-600 to bg-purple-600 text-white px-6 py-2 rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-sm hover:shadow-md"
+                  className="bg-linear-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-sm hover:shadow-md"
                 >
                   Dashboard
-                </a>
+                </Link>
               </div>
             ) : (
               <>
-                <a
-                  href="/login"
+                <Link
+                  to="/login"
                   className="text-gray-600 hover:text-gray-900 font-medium px-4 py-2 rounded-lg hover:bg-gray-50"
                 >
                   Login
-                </a>
-                <a
-                  href="/signup"
-                  className="bg-linear-to-r from-blue-600 to-purple-600 px-6 py-2 rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-sm hover:shadow-md"
+                </Link>
+                <Link
+                  to="/signup"
+                  className="bg-linear-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-sm hover:shadow-md"
                 >
                   Sign Up
-                </a>
+                </Link>
               </>
             )}
           </div>
