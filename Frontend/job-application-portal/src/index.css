@@ -16,3 +16,14 @@
     background-color: #f7fafe;
   }
 }
+
+/* Hide scrollbar while keeping content scrollable */
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
