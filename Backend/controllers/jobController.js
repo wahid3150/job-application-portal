@@ -39,7 +39,7 @@ exports.createJob = async (req, res) => {
 
 exports.getAllJobs = async (req, res) => {
   try {
-    const { keyword, location, jobType, page = 1, limit = 10 } = req.query;
+    const { keyword, location, jobType, salaryMin, salaryMax, page = 1, limit = 10 } = req.query;
 
     let query = { isClosed: false };
 
@@ -52,11 +52,45 @@ exports.getAllJobs = async (req, res) => {
     }
 
     if (location) {
-      query.location = location;
+      query.location = { $regex: location, $options: "i" };
     }
 
     if (jobType) {
       query.jobType = jobType;
+    }
+
+    // Salary range filter - find jobs where salary range overlaps with requested range
+    if (salaryMin || salaryMax) {
+      const salaryQuery = {};
+      if (salaryMin && salaryMax) {
+        // Both min and max provided: job's range should overlap with requested range
+        salaryQuery.$or = [
+          { salaryMin: { $lte: Number(salaryMax), $gte: Number(salaryMin) } },
+          { salaryMax: { $lte: Number(salaryMax), $gte: Number(salaryMin) } },
+          {
+            $and: [
+              { salaryMin: { $lte: Number(salaryMin) } },
+              { salaryMax: { $gte: Number(salaryMax) } },
+            ],
+          },
+        ];
+      } else if (salaryMin) {
+        // Only min provided: job's max should be >= requested min
+        salaryQuery.$or = [
+          { salaryMax: { $gte: Number(salaryMin) } },
+          { salaryMin: { $gte: Number(salaryMin) } },
+        ];
+      } else if (salaryMax) {
+        // Only max provided: job's min should be <= requested max
+        salaryQuery.$or = [
+          { salaryMin: { $lte: Number(salaryMax) } },
+          { salaryMax: { $lte: Number(salaryMax) } },
+        ];
+      }
+      if (Object.keys(salaryQuery).length > 0) {
+        query.$and = query.$and || [];
+        query.$and.push(salaryQuery);
+      }
     }
 
     const skip = (Number(page) - 1) * Number(limit);
@@ -130,13 +164,53 @@ exports.getJobById = async (req, res) => {
 
 exports.getJobsEmployer = async (req, res) => {
   try {
-    const jobs = await Job.find({ company: req.user._id }).sort({
-      createdAt: -1,
-    });
+    const { keyword, location, jobType, status, page = 1, limit = 50 } = req.query;
+
+    // Build query
+    let query = { company: req.user._id };
+
+    // Keyword search (title, description, requirements)
+    if (keyword) {
+      query.$or = [
+        { title: { $regex: keyword, $options: "i" } },
+        { description: { $regex: keyword, $options: "i" } },
+        { requirements: { $regex: keyword, $options: "i" } },
+      ];
+    }
+
+    // Location filter
+    if (location) {
+      query.location = { $regex: location, $options: "i" };
+    }
+
+    // Job type filter
+    if (jobType) {
+      query.jobType = jobType;
+    }
+
+    // Status filter (isClosed)
+    if (status === "open") {
+      query.isClosed = false;
+    } else if (status === "closed") {
+      query.isClosed = true;
+    }
+    // If status is "all" or not provided, show all
+
+    const skip = (Number(page) - 1) * Number(limit);
+
+    const jobs = await Job.find(query)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(Number(limit));
+
+    const total = await Job.countDocuments(query);
 
     return res.status(200).json({
       success: true,
       count: jobs.length,
+      total,
+      page: Number(page),
+      pages: Math.ceil(total / limit),
       jobs,
     });
   } catch (error) {
