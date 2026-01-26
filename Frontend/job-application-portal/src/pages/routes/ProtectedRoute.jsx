@@ -19,8 +19,15 @@ const ProtectedRoute = ({ requiredRole }) => {
     return <Navigate to="/login" replace />;
   }
 
-  // Check if user has required role
+  // Check if user has required role - redirect to their appropriate dashboard
   if (requiredRole && user?.role !== requiredRole) {
+    // Redirect to user's correct dashboard based on their role
+    if (user?.role === "employer") {
+      return <Navigate to="/employer-dashboard" replace />;
+    } else if (user?.role === "jobseeker") {
+      return <Navigate to="/jobseeker-dashboard" replace />;
+    }
+    // If role doesn't match and user role is unknown, redirect to home
     return <Navigate to="/" replace />;
   }
 

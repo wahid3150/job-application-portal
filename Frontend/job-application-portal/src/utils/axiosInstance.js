@@ -39,10 +39,21 @@ axiosInstance.interceptors.response.use(
   (error) => {
     // If token expired or invalid (401 Unauthorized)
     if (error.response?.status === 401) {
+      // Only redirect if we're on a protected route (not public pages)
+      const publicPaths = ["/", "/find-jobs", "/job/", "/login", "/signup"];
+      const currentPath = window.location.pathname;
+      const isPublicPath = publicPaths.some(
+        (path) => currentPath === path || currentPath.startsWith("/job/")
+      );
+
+      // Clear auth data
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-      // Redirect to login page
-      window.location.href = "/login";
+
+      // Only redirect to login if NOT on a public path
+      if (!isPublicPath) {
+        window.location.href = "/login";
+      }
     }
     return Promise.reject(error);
   },
