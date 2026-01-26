@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, Lock, Eye, EyeOff, CheckCircle, Loader } from "lucide-react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
 import { authAPI } from "../../utils/apiService";
 
 const Login = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirectTo = searchParams.get("redirect");
   const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
@@ -72,16 +74,17 @@ const Login = () => {
         login(response.user, response.token);
         setLoginSuccess(true);
 
-        // Redirect based on user role
+        // Redirect based on user role or return URL
         setTimeout(() => {
           toast.success("Login successful!");
           if (response.user.role === "employer") {
             navigate("/employer-dashboard");
           } else if (response.user.role === "jobseeker") {
-            navigate("/jobseeker-dashboard");
+            // If they came from a job page, send them back after login
+            const safeRedirect = redirectTo?.startsWith("/job/") ? redirectTo : "/jobseeker-dashboard";
+            navigate(safeRedirect);
           } else {
-            // Fallback for any other role
-            navigate("/");
+            navigate(redirectTo || "/");
           }
         }, 2500);
       }
