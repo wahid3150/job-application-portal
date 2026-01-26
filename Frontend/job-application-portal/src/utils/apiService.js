@@ -53,7 +53,7 @@ export const authAPI = {
 export const jobAPI = {
   // Get all jobs (public)
   getAllJobs: async (filters = {}) => {
-    const response = await axiosInstance.get(AUTH_ENDPOINTS.GET_ALL_JOBS, {
+    const response = await axiosInstance.get(JOB_ENDPOINTS.GET_ALL_JOBS, {
       params: filters,
     });
     return response.data;
@@ -76,9 +76,11 @@ export const jobAPI = {
     return response.data;
   },
 
-  // Get jobs posted by current employer
-  getEmployerJobs: async () => {
-    const response = await axiosInstance.get(JOB_ENDPOINTS.GET_EMPLOYER_JOBS);
+  // Get jobs posted by current employer (with optional filters)
+  getEmployerJobs: async (filters = {}) => {
+    const response = await axiosInstance.get(JOB_ENDPOINTS.GET_EMPLOYER_JOBS, {
+      params: filters,
+    });
     return response.data;
   },
 
@@ -173,6 +175,12 @@ export const savedJobAPI = {
 
 // USER PROFILE API
 export const userAPI = {
+  _getMyProfileUser: async () => {
+    const response = await axiosInstance.get(USER_ENDPOINTS.GET_MY_PROFILE);
+    // { success, user: {...} }
+    return response.data?.user;
+  },
+
   // Get current user's profile
   getMyProfile: async () => {
     const response = await axiosInstance.get(USER_ENDPOINTS.GET_MY_PROFILE);
@@ -185,6 +193,11 @@ export const userAPI = {
       USER_ENDPOINTS.UPDATE_PROFILE,
       profileData,
     );
+    // Backend returns { success, message } only → refresh profile for UI
+    if (response.data?.success) {
+      const user = await userAPI._getMyProfileUser();
+      return { ...response.data, user };
+    }
     return response.data;
   },
 
@@ -197,6 +210,11 @@ export const userAPI = {
       formData,
       { headers: { "Content-Type": "multipart/form-data" } },
     );
+    // Backend returns { success, avatar } → refresh profile for UI
+    if (response.data?.success) {
+      const user = await userAPI._getMyProfileUser();
+      return { ...response.data, user };
+    }
     return response.data;
   },
 
@@ -209,12 +227,22 @@ export const userAPI = {
       formData,
       { headers: { "Content-Type": "multipart/form-data" } },
     );
+    // Backend returns { success, resume } → refresh profile for UI
+    if (response.data?.success) {
+      const user = await userAPI._getMyProfileUser();
+      return { ...response.data, user };
+    }
     return response.data;
   },
 
   // Delete resume
   deleteResume: async () => {
     const response = await axiosInstance.delete(USER_ENDPOINTS.DELETE_RESUME);
+    // Backend returns { success, message } → refresh profile for UI
+    if (response.data?.success) {
+      const user = await userAPI._getMyProfileUser();
+      return { ...response.data, user };
+    }
     return response.data;
   },
 
