@@ -50,7 +50,7 @@ app.use(
 );
 
 // Fallback to React app
-app.get("*", (req, res) => {
+app.use((req, res) => {
   res.sendFile(
     path.join(__dirname, "../Frontend/job-application-portal/dist/index.html"),
   );
