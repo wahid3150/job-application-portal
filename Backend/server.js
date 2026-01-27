@@ -45,14 +45,14 @@ app.use("/uploads", express.static("uploads"));
 // Serve static files from React build
 app.use(
   express.static(
-    path.join(__dirname, "../Frontend/job-application-portal/build"),
+    path.join(__dirname, "../Frontend/job-application-portal/dist"),
   ),
 );
 
 // Fallback to React app
 app.get("*", (req, res) => {
   res.sendFile(
-    path.join(__dirname, "../Frontend/job-application-portal/build/index.html"),
+    path.join(__dirname, "../Frontend/job-application-portal/dist/index.html"),
   );
 });
 
