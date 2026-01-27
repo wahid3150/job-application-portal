@@ -1,7 +1,7 @@
 // Centralized API endpoints configuration
 // This file acts as a single source of truth for all backend API routes
 
-const BASE_URL = "http://localhost:8000/api";
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 // AUTH ENDPOINTS
 export const AUTH_ENDPOINTS = {
