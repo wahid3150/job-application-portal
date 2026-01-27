@@ -6,13 +6,11 @@
   "scripts": {
     "start": "node Backend/server.js",
     "dev": "cd Backend && nodemon server.js",
-    "build": "cd Frontend/job-application-portal && npm run build",
+    "postinstall": "cd Backend && npm install",
     "heroku-postbuild": "cd Frontend/job-application-portal && npm install --include=dev && npm run build"
   },
   "engines": {
     "node": "20.x",
     "npm": "9.x"
-  },
-  "dependencies": {},
-  "devDependencies": {}
+  }
 }
