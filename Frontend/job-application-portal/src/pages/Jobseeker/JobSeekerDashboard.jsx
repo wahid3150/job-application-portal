@@ -320,7 +320,7 @@ const JobSeekerDashboard = () => {
         jobAPI.getAllJobs({
           keyword: searchKeyword || undefined,
           location: location || undefined,
-          jobType: selectedJobTypes.length === 1 ? selectedJobTypes[0] : undefined,
+          jobType: selectedJobTypes.length > 0 ? selectedJobTypes.join(",") : undefined,
           salaryMin: salaryMin || undefined,
           salaryMax: salaryMax || undefined,
           page: 1,

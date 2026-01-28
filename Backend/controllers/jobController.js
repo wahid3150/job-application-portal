@@ -39,7 +39,15 @@ exports.createJob = async (req, res) => {
 
 exports.getAllJobs = async (req, res) => {
   try {
-    const { keyword, location, jobType, salaryMin, salaryMax, page = 1, limit = 10 } = req.query;
+    const {
+      keyword,
+      location,
+      jobType,
+      salaryMin,
+      salaryMax,
+      page = 1,
+      limit = 10,
+    } = req.query;
 
     let query = { isClosed: false };
 
@@ -55,8 +63,16 @@ exports.getAllJobs = async (req, res) => {
       query.location = { $regex: location, $options: "i" };
     }
 
+    // Handle both single and multiple job types
     if (jobType) {
-      query.jobType = jobType;
+      const jobTypes = Array.isArray(jobType)
+        ? jobType
+        : jobType.split(",").map((t) => t.trim());
+      if (jobTypes.length === 1) {
+        query.jobType = jobTypes[0];
+      } else if (jobTypes.length > 1) {
+        query.jobType = { $in: jobTypes };
+      }
     }
 
     // Salary range filter - find jobs where salary range overlaps with requested range
@@ -164,7 +180,14 @@ exports.getJobById = async (req, res) => {
 
 exports.getJobsEmployer = async (req, res) => {
   try {
-    const { keyword, location, jobType, status, page = 1, limit = 50 } = req.query;
+    const {
+      keyword,
+      location,
+      jobType,
+      status,
+      page = 1,
+      limit = 50,
+    } = req.query;
 
     // Build query
     let query = { company: req.user._id };
