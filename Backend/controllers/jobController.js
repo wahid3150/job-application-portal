@@ -51,16 +51,21 @@ exports.getAllJobs = async (req, res) => {
 
     let query = { isClosed: false };
 
+    // Helper function to escape regex special characters
+    const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
     if (keyword) {
+      const escapedKeyword = escapeRegex(keyword);
       query.$or = [
-        { title: { $regex: keyword, $options: "i" } },
-        { description: { $regex: keyword, $options: "i" } },
-        { requirements: { $regex: keyword, $options: "i" } },
+        { title: { $regex: escapedKeyword, $options: "i" } },
+        { description: { $regex: escapedKeyword, $options: "i" } },
+        { requirements: { $regex: escapedKeyword, $options: "i" } },
       ];
     }
 
     if (location) {
-      query.location = { $regex: location, $options: "i" };
+      const escapedLocation = escapeRegex(location);
+      query.location = { $regex: escapedLocation, $options: "i" };
     }
 
     // Handle both single and multiple job types
@@ -192,18 +197,23 @@ exports.getJobsEmployer = async (req, res) => {
     // Build query
     let query = { company: req.user._id };
 
+    // Helper function to escape regex special characters
+    const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
     // Keyword search (title, description, requirements)
     if (keyword) {
+      const escapedKeyword = escapeRegex(keyword);
       query.$or = [
-        { title: { $regex: keyword, $options: "i" } },
-        { description: { $regex: keyword, $options: "i" } },
-        { requirements: { $regex: keyword, $options: "i" } },
+        { title: { $regex: escapedKeyword, $options: "i" } },
+        { description: { $regex: escapedKeyword, $options: "i" } },
+        { requirements: { $regex: escapedKeyword, $options: "i" } },
       ];
     }
 
     // Location filter
     if (location) {
-      query.location = { $regex: location, $options: "i" };
+      const escapedLocation = escapeRegex(location);
+      query.location = { $regex: escapedLocation, $options: "i" };
     }
 
     // Job type filter
